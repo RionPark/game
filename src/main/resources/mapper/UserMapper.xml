@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.game.mapper.UserMapper">
+	<sql id="cols">
+		UI_NUM, UI_ID, UI_PWD, UI_NAME, 
+		UI_NICK_NAME, UI_ADDR1, UI_ADDR2, UI_ZIP, 
+		UI_PHONE,UI_TRANS, UI_EMAIL, UI_DESC,
+		UI_GRADE, CREDAT, CRETIM, LMODAT,
+		LMOTIM, ACTIVE
+	</sql>
+	<select id="selectUsers" resultType="com.example.game.vo.UserVO">
+		select <include refid="cols"></include>
+		from USER_INFO
+	</select>
+	<select id="selectUser" resultType="com.example.game.vo.UserVO">
+		select <include refid="cols"></include>
+		from USER_INFO
+		WHERE UI_NUM=#{uiNum}
+	</select>
+	<select id="selectUserById" resultType="com.example.game.vo.UserVO">
+		select <include refid="cols"></include>
+		from USER_INFO
+		WHERE UI_ID = #{uiId}
+	</select>
+	<select id="selectCntByActive">
+		SELECT ACTIVE, COUNT(*)
+		FROM USER_INFO
+		GROUP BY ACTIVE
+	</select>
+	<insert id="insertUser">
+		INSERT INTO USER_INFO (
+            UI_ID, UI_PWD, UI_NAME, UI_NICK_NAME,
+            UI_ADDR1, UI_ADDR2, UI_ZIP, UI_PHONE,
+            UI_EMAIL, UI_DESC
+            <if test='uiGrade != null and uiGrade != ""'>
+            	, UI_GRADE
+            </if>
+            <if test='uiTrans != null and uiTrans != ""'>
+            , UI_TRANS
+            </if>
+            <if test='active != null and active != ""'>
+            , ACTIVE
+            </if>
+        ) VALUES (
+            #{uiId}, #{uiPwd}, #{uiName}, #{uiNickName},
+            #{uiAddr1}, #{uiAddr2}, #{uiZip}, #{uiPhone},
+            #{uiEmail}, #{uiDesc}
+            <if test='uiGrade != null and uiGrade != ""'>
+            , #{uiGrade}
+            </if>
+            <if test='uiTrans != null and uiTrans != ""'>
+            , #{uiTrans}
+            </if>
+            <if test='active != null and active != ""'>
+            , #{active}
+            </if>
+        )
+	</insert>
+	<update id="updateUserInfo">
+        UPDATE USER_INFO
+        <set>
+            UI_PWD = #{uiPwd},
+            UI_NAME = #{uiName},
+            UI_NICK_NAME = #{uiNickName},
+            UI_ADDR1 = #{uiAddr1},
+            UI_ZIP = #{uiZip},
+            <if test='uiAddr2 != null and uiAddr2 != ""'>
+                UI_ADDR2 = #{uiAddr2},
+            </if>
+            <if test='uiPhone != null and uiPhone != ""'>
+                UI_PHONE = #{uiPhone},
+            </if>
+            <if test='uiTrans != null and uiTrans != ""'>
+                UI_TRANS = #{uiTrans},
+            </if>
+            <if test='uiEmail != null and uiEmail != ""'>
+                UI_EMAIL = #{uiEmail},
+            </if>
+            <if test='uiDesc != null and uiDesc != ""'>
+                UI_DESC = #{uiDesc},
+            </if>
+            <if test='uiGrade != null and uiGrade != ""'>
+                UI_GRADE = #{uiGrade},
+            </if>
+            <if test='active != null and active != ""'>
+                ACTIVE = #{active},
+            </if>
+            LMODAT = DATE_FORMAT(NOW(),'%Y%m%d'),
+            LMOTIM = DATE_FORMAT(NOW(),'%H%i%s')
+        </set>
+        WHERE UI_NUM = #{uiNum}
+    </update>
+    <update id="deleteUser">
+    	UPDATE USER_INFO
+    	SET ACTIVE='2'
+    	WHERE UI_NUM = #{uiNum}
+    </update>
+</mapper>

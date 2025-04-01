@@ -12,5 +12,6 @@ public class ViewController {
 	}
 	
 	@GetMapping("/views/**")
-	public void goPage() {}
+	public void goPage() {		// /WEB-INF /views/a/b/c/d/e/f.... .jsp 		
+	}
 }
