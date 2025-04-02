@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.game.mapper.FoodMapper">
+	<sql id="cols">
+		FI_NUM, FI_NAME, FI_PRICE
+	</sql>
+	<select id="selectFoods" resultType="com.example.game.vo.FoodVO">
+		select <include refid="cols"></include>
+		from FOOD_INFO
+		<where>
+			<if test='fiName != null and fiName != ""'>
+			AND FI_NAME LIKE CONCAT('%',#{fiName},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectFood" resultType="com.example.game.vo.FoodVO">
+		select <include refid="cols"></include>
+		from FOOD_INFO
+		WHERE FI_NUM=#{fiNum}
+	</select>
+	<insert id="insertFood">
+		INSERT INTO FOOD_INFO (FI_NAME, FI_PRICE)
+		VALUES(#{fiName}, #{fiPrice})
+	</insert>
+	<update id="updateFood">
+        UPDATE FOOD_INFO
+        SET FI_NAME = #{fiName},
+        FI_PRICE = #{fiPrice}
+        WHERE FI_NUM = #{fiNum}
+    </update>
+    <delete id="deleteFood">
+    	DELETE FROM  FOOD_INFO
+    	WHERE FI_NUM = #{fiNum}
+    </delete>
+</mapper>
