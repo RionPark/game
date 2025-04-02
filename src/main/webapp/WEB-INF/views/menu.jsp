@@ -16,7 +16,7 @@
 	right:0;
 	padding : 10px;
 	transform:translateX(100%);
-	transition: 0.5s;
+	transition: 1s;
 }
 .open{
 	transform:translateX(0);

@@ -5,19 +5,26 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
 </head>
 <body>
-<div onclick="show(this)">
-	<div class="test">test1</div>
-</div>
-<div  onclick="show(this)">
-	<div class="test">test2</div>
-</div>
 <script>
-function show(obj){
-	const t1 = obj.querySelector('.test');
-	alert(t1.innerHTML);
+function  connection(){
+	return new Promise(function(resolve, reject) {
+		setTimeout(function(){
+			resolve(true);
+		},10);	
+	});
+}
+
+connection()
+.then(res=>{
+	if(res){
+		alert('기다리니까 연결 성공');
+	}
+});
+
+if(connection()===true){
+	alert('연결 성공');
 }
 </script>
 </body>

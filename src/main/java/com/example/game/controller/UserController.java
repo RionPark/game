@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.game.service.UserService;
 import com.example.game.vo.UserVO;
@@ -21,5 +22,11 @@ public class UserController {
 		List<UserVO> users = userService.selectUsers(user);
 		m.addAttribute("users",users);
 		return "views/user/user-list";
+	}
+	
+	@GetMapping("/users")
+	@ResponseBody
+	public List<UserVO> getUsers(@ModelAttribute UserVO user) {
+		return userService.selectUsers(user);
 	}
 }

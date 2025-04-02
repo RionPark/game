@@ -13,6 +13,11 @@
 	<select id="selectUsers" resultType="com.example.game.vo.UserVO">
 		select <include refid="cols"></include>
 		from USER_INFO
+		<where>
+			<if test='uiName != null and uiName != ""'>
+			AND UI_NAME LIKE CONCAT('%',#{uiName},'%')
+			</if>
+		</where>
 	</select>
 	<select id="selectUser" resultType="com.example.game.vo.UserVO">
 		select <include refid="cols"></include>
