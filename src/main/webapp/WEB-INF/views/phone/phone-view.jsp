@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="/resources/jquery-3.7.1.js"></script>
 </head>
 <body>
 <table border="1">
@@ -33,38 +34,31 @@
 </table>
 <script>
 const piNum = '${param.piNum}';
+
 function deletePhone(){
-	const xhr = new XMLHttpRequest();
-	xhr.open('DELETE','/phones/' + piNum);
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState === 4){
-			if(xhr.status === 200){
-				if(xhr.responseText === '1'){
-					alert('삭제 완료');
-					location.href='/views/phone/phone-list';
-				}
+	$.ajax({
+		method:'DELETE',
+		url : '/phones/' + piNum,
+		success : function(res){
+			if(res===1){
+				alert('삭제 완료');
+				location.href = '/views/phone/phone-list';
 			}
 		}
-	}
-	xhr.setRequestHeader('Content-Type','application/json;chatset=UTF-8');
-	xhr.send();
+	})
 }
 function getPhone(){
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET','/phones/' + piNum);
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState === 4){
-			if(xhr.status === 200){
-				const phone = JSON.parse(xhr.responseText);
-				for(const key in phone){
-					if(document.querySelector('[data-col=' + key + ']')){
-						document.querySelector('[data-col=' + key + ']').innerHTML = phone[key];
-					}
+	$.ajax({
+		method : 'GET',
+		url : '/phones/' + piNum,
+		success : function(phone){
+			for(const key in phone){
+				if(document.querySelector('[data-col=' + key + ']')){
+					document.querySelector('[data-col=' + key + ']').innerHTML = phone[key];
 				}
 			}
 		}
-	}
-	xhr.send();
+	});
 }
 window.onload = function(){
 	getPhone();

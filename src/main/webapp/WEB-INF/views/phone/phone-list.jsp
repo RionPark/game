@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="/resources/jquery-3.7.1.js"></script>
 </head>
 <body>
 <table border="1">
@@ -17,28 +18,28 @@
 	<tbody id="tBody"></tbody>
 </table>
 <script>
+// 변수명 영문 소문자
+// 특수 문자 숫자가 첫글자 안됨!
+// 단 특수 문자중에 딱 2가지가 예외 $, _
 function getPhones(){
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET','/phones');
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState === 4){
-			if(xhr.status === 200){
-				const phones = JSON.parse(xhr.responseText);
-				var html = '';
-				for(const phone of phones){
-					html += '<tr>';
-					html += '<td>' + phone.piNum + '</td>';
-					html += '<td><a href="/views/phone/phone-view?piNum=' + phone.piNum + '">' + phone.piName + '</a></td>';
-					html += '<td>' + phone.piPrice + '</td>';
-					html += '<td>' + phone.piVendor + '</td>';
-					html += '</tr>';
-				}
-				document.querySelector('#tBody').innerHTML = html;
+	$.ajax({
+		method:'GET',
+		url:'/phones',
+		success: function(phones){
+			var html = '';
+			for(const phone of phones){
+				html += '<tr>';
+				html += '<td>' + phone.piNum + '</td>';
+				html += '<td><a href="/views/phone/phone-view?piNum=' + phone.piNum + '">' + phone.piName + '</a></td>';
+				html += '<td>' + phone.piPrice + '</td>';
+				html += '<td>' + phone.piVendor + '</td>';
+				html += '</tr>';
 			}
+			$('#tBody').html(html);
 		}
-	}
-	xhr.send();
+	});
 }
+
 window.onload = function(){
 	getPhones();
 }

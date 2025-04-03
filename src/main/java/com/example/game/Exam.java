@@ -1,18 +1,12 @@
 package com.example.game;
 
 public class Exam {
+	static String name;
 	public static void printText(int time, String text) {
-		try {
-			Thread.sleep(time);
-			System.out.println(text);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		name = "홍길동";
 	}
 
 	public static void main(String[] args) {
-		printText(3000,"1");
-		printText(2000,"2");
-		printText(1000,"3");
+		System.out.println(name);
 	}
 }

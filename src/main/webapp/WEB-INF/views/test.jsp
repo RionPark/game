@@ -8,24 +8,11 @@
 </head>
 <body>
 <script>
-function  connection(){
-	return new Promise(function(resolve, reject) {
-		setTimeout(function(){
-			resolve(true);
-		},10);	
-	});
+var str = 'abcd';
+String.prototype.size = function(){
+	return this.length;
 }
-
-connection()
-.then(res=>{
-	if(res){
-		alert('기다리니까 연결 성공');
-	}
-});
-
-if(connection()===true){
-	alert('연결 성공');
-}
+alert(str.size());
 </script>
 </body>
 </html>

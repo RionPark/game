@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="/resources/jquery-3.7.1.js"></script>
 </head>
 <body>
 <input type="text" id="piName" placeholder="휴대폰명"><br>
@@ -19,21 +20,18 @@ function insertPhone(){
 			piVendor:document.querySelector('#piVendor').value
 	}
 	const json = JSON.stringify(param);
-	
-	const xhr = new XMLHttpRequest();
-	xhr.open('POST','/phones');
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState === 4){
-			if(xhr.status === 200){
-				if(xhr.responseText === '1'){
-					alert('등록 완료');
-					location.href='/views/phone/phone-list';
-				}
+	$.ajax({
+		method:'POST',
+		url : '/phones',
+		data : json,
+		contentType : 'application/json',
+		success : function (res){
+			if(res === 1){
+				alert('등록 완료');
+				location.href='/views/phone/phone-list';
 			}
 		}
-	}
-	xhr.setRequestHeader('Content-Type','application/json;chatset=UTF-8');
-	xhr.send(json);
+	});
 }
 </script>
 </body>
