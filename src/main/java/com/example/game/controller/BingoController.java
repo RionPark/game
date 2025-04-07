@@ -1,5 +1,6 @@
 package com.example.game.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,13 @@ public class BingoController {
 			return;
 		}
 		BingoService.addSession(sessionId, name);
-		smt.convertAndSend("/topic/check/" + name, BingoService.getBingoSession());
+		Map<String,String> map = new HashMap<>();
+		map.put(sessionId, name);
+		map.put("mySessionId", sessionId);
+		smt.convertAndSend("/topic/visite", map);
+		map.putAll(BingoService.getBingoSession());
+		map.put("playerCnt", BingoService.getBingoSession().size() + ""); //1,2
+		smt.convertAndSend("/topic/check/" + name, map);
 	}
 	
 	

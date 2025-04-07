@@ -15,6 +15,10 @@ public class BingoService {
 	public static Map<String,String> getBingoSession(){
 		return bingoSession;
 	}
+	
+	public static void removeSessionId(String sessionId) {
+		bingoSession.remove(sessionId);
+	}
 	public static boolean isExisteName(String name) {
 		Iterator<String> it = bingoSession.keySet().iterator();
 		while(it.hasNext()) {

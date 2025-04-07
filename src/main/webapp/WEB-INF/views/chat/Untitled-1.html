@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -84,7 +82,6 @@ button {
 const $name = $('#name');
 const cnt = 4;
 var stomp;
-var sessionId;
 
 function start(){
 	$('#init').hide();
@@ -121,17 +118,10 @@ function selectNum(obj){
 
 var isCorrect = false;
 function connect(){
+    start();
 	const socket = new SockJS('/ws');
 	stomp = Stomp.over(socket);
-	
-	// Debug 옵션 끄기
-	stomp.debug = null;
-	
 	stomp.connect({}, function(frame){
-		// sessionId 추출
-		sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
-		console.log("Connected, session id: " + sessionId);
-		
 		var checkSub = stomp.subscribe('/topic/check/' + $name.val(), function(data){
 			const body = JSON.parse(data.body);
 			if(body.errorCode){
@@ -143,20 +133,12 @@ function connect(){
 			checkSub.unsubscribe();
 			start();
 		});
-		
-		// sessionId와 함께 이름 전송
-		stomp.send('/app/check/' + $name.val(), {}, JSON.stringify({
-			sessionId: sessionId,
-			name: $name.val()
-		}));
+		stomp.send('/app/check/' + $name.val());
 	});
 }
 
 function sendMessage(param){
-	const json = JSON.stringify({
-		...param,
-		sessionId: sessionId
-	});
+	const json = JSON.stringify(param);
 	stomp.send('/app/bingo', {}, json);
 }
 </script>

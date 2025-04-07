@@ -5,14 +5,14 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="/resources/jquery-3.7.1.js"></script>
 </head>
 <body>
 <script>
-var str = 'abcd';
-String.prototype.size = function(){
-	return this.length;
-}
-alert(str.size());
+$(document).ready(function(){
+	$('#test').html('abc');
+})
 </script>
+<div id="test"></div>
 </body>
 </html>
