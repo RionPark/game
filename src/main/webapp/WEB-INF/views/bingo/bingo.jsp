@@ -54,6 +54,9 @@ td{
 .now{
 	border: 1px solid red;
 }
+.selected{
+	background-color:#abcdef;
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
@@ -91,17 +94,74 @@ function setNumber(obj){
 	for(const idx in tds){
 		const td = tds[idx];
 		if(td.innerText === 'O'){
+			td.id = 'td' + obj.innerText;
 			td.innerText = obj.innerText;
 			obj.remove();
 			console.log(tds.length-1, idx);
 			if(idx == tds.length-1){
 				$('td').css('cursor','pointer');
 				$('td').on('click',function(){
-					alert($(this).text());
+					if(players[players.mySessionId]!==$('.now span').text()){
+						alert('아직 선택할 차례가 아닙니다.');
+						return;
+					}
+					const param = {
+							sessionId : players.mySessionId,
+							number : $(this).text()
+					}
+					stomp.send('/app/bingo',{},JSON.stringify(param));
 				})
-				alert('게임준비 완료!');	
+				alert('게임준비 완료!');
+				stomp.subscribe('/topic/bingo',function(data){
+					const body = JSON.parse(data.body);
+					$('.first').toggleClass('now');
+					$('.second').toggleClass('now');
+					$('td#td' + body.number).addClass('selected');
+					checkBingo();
+				})
 			}
 			return;
+		}
+	}
+}
+function checkBingo(){
+	const tds = document.querySelectorAll('td');
+	var rows = [];
+	var cols = [];
+	var lCross = [];
+	var rCross = [];
+	const arr = [];
+	for(var i=0;i<bingoCnt;i++){
+		const lcIdx = (i*bingoCnt) +i;
+		lCross.push(tds[lcIdx].innerText);
+		const rcIdx = (i*bingoCnt) + (bingoCnt-1) - i;
+		rCross.push(tds[rcIdx].innerText);
+		rows = [];
+		cols = [];
+		for(var j=0;j<bingoCnt;j++){
+			const rIdx = (i*bingoCnt)+j;
+			rows.push(tds[rIdx].innerText);
+			const cIdx = (j*bingoCnt)+i;
+			cols.push(tds[cIdx].innerText);
+		}
+		arr.push(rows);
+		arr.push(cols);
+	}
+	arr.push(lCross);
+	arr.push(rCross);
+	var checkBingo = 0;
+	arr.forEach(function(subArr){
+		const isBingo = subArr.every(function(num){
+			return document.querySelector('#td' + num).classList.contains('selected');
+		})
+		if(isBingo){
+			checkBingo++;
+		}
+	});
+	if(checkBingo>0){
+		alert('빙고 갯수는 ' + checkBingo + '입니다.');
+		if(checkBingo==3){
+			alert('이겼습니다.');
 		}
 	}
 }
@@ -121,6 +181,11 @@ function init(){
 	}
 	tableHtml += '</table>';
 	$('#table').html(tableHtml);
+	while(document.querySelectorAll('#btns button').length>0){
+		const rNum = Math.floor(Math.random()*document.querySelectorAll('#btns button').length);
+		document.querySelectorAll('#btns button')[rNum].click();
+		console.log(document.querySelectorAll('#btns button').length);
+	}
 }
 function start(){
 	$('.start').hide();
@@ -129,8 +194,11 @@ function start(){
 	stomp.subscribe('/topic/visite', function(data){
 		const body = JSON.parse(data.body);
 		if(body.type==='exit'){
+			console.log(players);
 			alert(players[body.sessionId] + '님이 나가셨습니다.');
 			$('#secondSpan').html('');
+			$('#firstSpan').html(players[players.mySessionId]);
+			init();
 		}else{
 			const name = body[body.mySessionId];
 			players[body.mySessionId] = name;

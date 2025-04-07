@@ -12,8 +12,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.example.game.service.BingoService;
+import com.example.game.vo.BingoVO;
 import com.example.game.vo.ErrorVO;
-import com.example.game.vo.MessageVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,8 +25,8 @@ public class BingoController {
 
 	@MessageMapping("/bingo")
 	@SendTo("/topic/bingo")
-	public MessageVO bingo(MessageVO message) {
-		return message;
+	public BingoVO bingo(BingoVO bingo) {
+		return bingo;
 	}
 	
 	@MessageMapping("/check/{name}")
